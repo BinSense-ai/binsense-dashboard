@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- BinSense PWA build: 2026-09-01-v2 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -366,8 +367,8 @@
   function fetchLatest(){
     log("Checking for latest reading...");
     refreshBtn.disabled = true;
-    var url = getEndpoint() + "?action=latest";
-    fetch(url)
+    var url = getEndpoint() + "?action=latest&t=" + Date.now();
+    fetch(url, { cache: "no-store" })
       .then(function(r){ return r.json(); })
       .then(function(data){
         refreshBtn.disabled = false;
@@ -462,8 +463,8 @@
 
     var promise;
     if (currentFileId){
-      var url = getEndpoint() + "?action=analyze&fileId=" + encodeURIComponent(currentFileId) + "&binType=" + encodeURIComponent(binType.value);
-      promise = fetch(url).then(function(r){ return r.json(); });
+      var url = getEndpoint() + "?action=analyze&fileId=" + encodeURIComponent(currentFileId) + "&binType=" + encodeURIComponent(binType.value) + "&t=" + Date.now();
+      promise = fetch(url, { cache: "no-store" }).then(function(r){ return r.json(); });
     } else {
       // Manual test image: send bytes directly via POST-style query is too large,
       // so we post it to the same analyze action with the image in the body.
@@ -570,10 +571,13 @@
     log("Cycle reset (testing only).");
   });
 
-  // ==== PWA: register service worker if available ====
+  // ==== PWA: register/update service worker ====
+  // Versioned URL + reg.update() helps GitHub Pages clients pick up new builds.
   if ("serviceWorker" in navigator){
     window.addEventListener("load", function(){
-      navigator.serviceWorker.register("sw.js").catch(function(){ /* fine if unavailable */ });
+      navigator.serviceWorker.register("sw.js?v=2")
+        .then(function(reg){ return reg.update(); })
+        .catch(function(){ /* fine if unavailable */ });
     });
   }
 
