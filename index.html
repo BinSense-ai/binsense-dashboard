@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BinSense PWA build: 2026-09-01-v2 -->
+<!-- BinSense PWA build: 2026-09-02-v3 customer-simple -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -8,214 +8,113 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BinSense">
-<title>BinSense Field Monitor</title>
+<title>BinSense</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#0D1B2A; --navy-deep:#061A10; --green:#2ECC71; --teal:#1ABC9C;
-    --mint:#A8F0C6; --mint-tint:#E8F5EE; --mint-tint2:#F0F7F4;
-    --gray:#6B7785; --amber:#F5A623; --red:#E74C3C;
-    --ink:#101820;
+    --navy:#0D1B2A; --green:#2ECC71; --teal:#1ABC9C;
+    --mint-tint:#E8F5EE; --mint-tint2:#F0F7F4;
+    --gray:#6B7785; --amber:#F5A623; --red:#E74C3C; --ink:#101820;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
-    font-family:'Inter',system-ui,sans-serif;
-    background:var(--navy);
-    color:var(--ink);
-    min-height:100vh;
-    -webkit-font-smoothing:antialiased;
+    font-family:'Inter',system-ui,sans-serif;background:var(--navy);color:var(--ink);
+    min-height:100vh;-webkit-font-smoothing:antialiased;
   }
   .display{font-family:'Space Grotesk',sans-serif;}
   .mono{font-family:'IBM Plex Mono',monospace;}
-
   .shell{max-width:480px;margin:0 auto;min-height:100vh;background:#fff;box-shadow:0 0 60px rgba(0,0,0,.3);}
-
-  header{
-    background:var(--navy);
-    color:#fff;
-    padding:22px 20px 26px;
-  }
+  header{background:var(--navy);color:#fff;padding:22px 20px 24px;}
   header .brand{display:flex;align-items:center;gap:10px;}
   header .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(46,204,113,.2);}
-  header h1{font-size:1.15rem;margin:0;letter-spacing:.01em;}
+  header h1{font-size:1.2rem;margin:0;letter-spacing:.01em;}
   header p{margin:6px 0 0;color:#9FB0C3;font-size:.82rem;}
-
-  main{padding:16px;padding-bottom:40px;}
-
+  main{padding:16px;padding-bottom:32px;}
   section{margin-bottom:14px;}
-  .card{
-    background:#fff;
-    border:1px solid #E4E9EF;
-    border-radius:14px;
-    overflow:hidden;
-  }
+  .card{background:#fff;border:1px solid #E4E9EF;border-radius:14px;overflow:hidden;}
   .card-pad{padding:16px;}
-  .card-head{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:14px 16px;border-bottom:1px solid #EEF1F5;
-  }
-  .card-head h2{font-size:.92rem;margin:0;font-weight:600;color:var(--ink);}
+  .card-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EEF1F5;}
+  .card-head h2{font-size:.92rem;margin:0;font-weight:600;}
   .card-head .meta{font-size:.72rem;color:var(--gray);}
 
-  /* HERO: latest photo */
-  .photo-wrap{
-    position:relative;background:#0A0F16;
-    aspect-ratio: 4/3;
-    display:flex;align-items:center;justify-content:center;
-  }
+  .photo-wrap{position:relative;background:#0A0F16;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;}
   .photo-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
   .photo-empty{color:#5C6B7A;font-size:.85rem;text-align:center;padding:20px;}
-  .photo-badge{
-    position:absolute;top:10px;left:10px;
-    background:rgba(13,27,42,.75);color:#fff;
-    font-size:.68rem;padding:4px 9px;border-radius:20px;
-    backdrop-filter:blur(4px);
-  }
+  .photo-badge{position:absolute;top:10px;left:10px;background:rgba(13,27,42,.78);color:#fff;font-size:.68rem;padding:4px 9px;border-radius:20px;backdrop-filter:blur(4px);}
 
-  .stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:#EEF1F5;}
-  .stat{background:#fff;padding:12px 10px;text-align:center;}
-  .stat .val{font-size:1.35rem;font-weight:600;color:var(--navy);}
-  .stat .lbl{font-size:.66rem;color:var(--gray);margin-top:2px;text-transform:uppercase;letter-spacing:.04em;}
+  .fill-box{background:#fff;padding:15px 16px;text-align:center;border-top:1px solid #EEF1F5;}
+  .fill-box .val{font-size:1.8rem;font-weight:700;color:var(--navy);}
+  .fill-box .lbl{font-size:.68rem;color:var(--gray);margin-top:3px;text-transform:uppercase;letter-spacing:.05em;}
 
-  button{
-    font-family:inherit;border:none;cursor:pointer;
-    border-radius:10px;font-weight:600;font-size:.88rem;
-    transition:opacity .15s ease, transform .1s ease;
-  }
+  button{font-family:inherit;border:none;cursor:pointer;border-radius:10px;font-weight:600;font-size:.88rem;transition:opacity .15s ease,transform .1s ease;}
   button:active{transform:scale(.98);}
   button:disabled{opacity:.45;cursor:default;transform:none;}
+  .btn-primary{width:100%;background:var(--green);color:var(--navy);padding:13px;}
+  .btn-secondary{width:100%;background:var(--mint-tint);color:var(--navy);padding:12px;border:1px solid #D5EEDE;}
 
-  .btn-primary{
-    width:100%;background:var(--green);color:var(--navy);
-    padding:13px;
-  }
-  .btn-secondary{
-    width:100%;background:var(--mint-tint);color:var(--navy);
-    padding:12px;border:1px solid #D5EEDE;
-  }
-  .btn-ghost{
-    background:none;color:var(--teal);font-size:.78rem;padding:6px 0;
-    text-decoration:underline;text-underline-offset:3px;
-  }
-
-  select{
-    width:100%;padding:11px 12px;border-radius:10px;
-    border:1px solid #DCE2E8;background:#fff;font-family:inherit;
-    font-size:.88rem;color:var(--ink);appearance:none;
+  select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid #DCE2E8;background:#fff;font-family:inherit;font-size:.88rem;color:var(--ink);appearance:none;
     background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3e%3cpath d='M6 8l4 4 4-4' stroke='%236B7785' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
-    background-repeat:no-repeat;background-position:right 12px center;
-  }
+    background-repeat:no-repeat;background-position:right 12px center;}
   label.field-label{display:block;font-size:.75rem;color:var(--gray);margin-bottom:6px;font-weight:500;}
 
-  /* Verdict card */
   .verdict{padding:16px;border-radius:12px;margin-top:12px;}
   .verdict.clean{background:#E8F9EF;border:1px solid #B9EDCB;}
   .verdict.moderate{background:#FFF6E5;border:1px solid #F5DA9F;}
   .verdict.severe{background:#FDEBEA;border:1px solid #F3B9B4;}
   .verdict.pending{background:var(--mint-tint2);border:1px solid #E0EAE4;}
-  .verdict .tag{
-    display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.03em;
-    padding:3px 9px;border-radius:20px;margin-bottom:8px;
-  }
+  .verdict .tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.03em;padding:3px 9px;border-radius:20px;margin-bottom:8px;}
   .verdict.clean .tag{background:var(--green);color:#fff;}
   .verdict.moderate .tag{background:var(--amber);color:#fff;}
   .verdict.severe .tag{background:var(--red);color:#fff;}
   .verdict.pending .tag{background:#C9D4DC;color:var(--navy);}
   .verdict p{margin:0;font-size:.86rem;line-height:1.5;color:#33404B;}
 
-  .qas-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
-  .qas-box{background:var(--mint-tint2);border-radius:10px;padding:12px;text-align:center;}
-  .qas-box .num{font-size:1.5rem;font-weight:700;color:var(--navy);}
-  .qas-box .lbl{font-size:.68rem;color:var(--gray);margin-top:2px;}
+  .status-card{padding:16px;}
+  .status-title{font-size:.75rem;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
+  .status-pill{display:inline-flex;align-items:center;gap:7px;font-size:.95rem;font-weight:700;}
+  .status-pill .dot{width:8px;height:8px;border-radius:50%;}
+  .status-pill.eligible{color:#1E9E58;} .status-pill.eligible .dot{background:#1E9E58;}
+  .status-pill.pending{color:#C97A0E;} .status-pill.pending .dot{background:#C97A0E;}
+  .status-pill.ineligible{color:#C93B32;} .status-pill.ineligible .dot{background:#C93B32;}
+  .status-note{font-size:.78rem;color:var(--gray);line-height:1.5;margin:8px 0 0;}
 
-  /* Reward tracker */
-  .tracker-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .tracker-box{background:var(--mint-tint2);border-radius:10px;padding:12px;}
-  .tracker-box .lbl{font-size:.68rem;color:var(--gray);text-transform:uppercase;letter-spacing:.03em;}
-  .tracker-box .val{font-size:1.15rem;font-weight:600;color:var(--navy);margin-top:3px;}
-  .status-pill{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;font-weight:600;margin-top:3px;}
-  .status-pill .dot{width:7px;height:7px;border-radius:50%;}
-  .status-pill.full{color:#1E9E58;} .status-pill.full .dot{background:#1E9E58;}
-  .status-pill.mid{color:#C97A0E;} .status-pill.mid .dot{background:#C97A0E;}
-  .status-pill.out{color:#C93B32;} .status-pill.out .dot{background:#C93B32;}
-  .status-pill.na{color:var(--gray);} .status-pill.na .dot{background:#B9C2CB;}
-
-  .strike-dots{display:flex;gap:5px;margin-top:8px;}
-  .strike-dots .d{width:14px;height:14px;border-radius:4px;background:#E4E9EF;}
-  .strike-dots .d.filled{background:var(--red);}
-
-  /* Log / status line */
-  .logline{
-    font-size:.74rem;color:var(--gray);text-align:center;
-    padding:10px 16px;
-  }
+  .logline{font-size:.72rem;color:var(--gray);text-align:center;padding:8px 16px 14px;}
   .logline.err{color:var(--red);}
-
-  details.advanced{margin-top:6px;}
-  details.advanced summary{font-size:.75rem;color:var(--teal);cursor:pointer;list-style:none;}
-  details.advanced summary::-webkit-details-marker{display:none;}
-  details.advanced .inner{padding-top:10px;}
-  input[type=text]{
-    width:100%;padding:10px;border-radius:8px;border:1px solid #DCE2E8;
-    font-family:'IBM Plex Mono',monospace;font-size:.78rem;
-  }
-  input[type=file]{font-size:.78rem;}
-
-  .spinner{
-    width:16px;height:16px;border-radius:50%;
-    border:2px solid rgba(255,255,255,.35);border-top-color:#fff;
-    display:inline-block;vertical-align:-3px;margin-right:7px;
-    animation:spin .7s linear infinite;
-  }
+  .spinner{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;display:inline-block;vertical-align:-3px;margin-right:7px;animation:spin .7s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
-
 <div class="shell">
   <header>
-    <div class="brand"><span class="dot"></span><h1 class="display">BinSense Field Monitor</h1></div>
-    <p id="headerSub">Connect your Apps Script endpoint to begin.</p>
+    <div class="brand"><span class="dot"></span><h1 class="display">BinSense</h1></div>
+    <p id="headerSub">Your bin status at a glance.</p>
   </header>
 
   <main>
-
-    <!-- SETUP: shown until an endpoint is saved -->
-    <section id="setupCard" class="card card-pad">
-      <label class="field-label">Apps Script Web App URL</label>
-      <input type="text" id="endpointInput" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
-      <p style="font-size:.72rem;color:var(--gray);margin:8px 0 12px;">
-        From your Apps Script deployment. Saved on this device only — never sent anywhere but your own script.
-      </p>
-      <button class="btn-primary" id="saveEndpointBtn">Connect</button>
-    </section>
-
-    <!-- LATEST READING (hero) -->
-    <section id="readingSection" style="display:none;">
+    <section id="readingSection">
       <div class="card">
         <div class="photo-wrap">
-          <img id="latestPhoto" style="display:none;">
-          <div class="photo-empty" id="photoEmpty">No image received yet</div>
+          <img id="latestPhoto" style="display:none;" alt="Latest BinSense bin capture">
+          <div class="photo-empty" id="photoEmpty">Loading latest successful image…</div>
           <span class="photo-badge" id="photoTimestamp"></span>
         </div>
-        <div class="stat-row">
-          <div class="stat"><div class="val mono" id="statFill">--</div><div class="lbl">Fill Level</div></div>
-          <div class="stat"><div class="val mono" id="statBattery">--</div><div class="lbl">Battery</div></div>
-          <div class="stat"><div class="val mono" id="statDistance">--</div><div class="lbl">Distance</div></div>
+        <div class="fill-box">
+          <div class="val mono" id="statFill">--</div>
+          <div class="lbl">Fill Level</div>
         </div>
         <div class="card-pad" style="padding-top:14px;">
-          <button class="btn-secondary" id="refreshBtn">Check for New Reading</button>
+          <button class="btn-secondary" id="refreshBtn">Refresh</button>
         </div>
       </div>
     </section>
 
-    <!-- CONTAMINATION ANALYSIS -->
-    <section id="analysisSection" style="display:none;">
+    <section id="analysisSection">
       <div class="card card-pad">
-        <label class="field-label">Bin Stream</label>
+        <label class="field-label">Bin Type</label>
         <select id="binType">
           <option value="recycle">Recycling</option>
           <option value="compost">Compost</option>
@@ -223,193 +122,48 @@
         </select>
 
         <div style="margin-top:12px;">
-          <button class="btn-primary" id="analyzeBtn" disabled>Analyze for Contamination</button>
+          <button class="btn-primary" id="analyzeBtn" disabled>Analyze Bin</button>
         </div>
 
         <div class="verdict pending" id="verdictBox">
-          <span class="tag">AWAITING ANALYSIS</span>
-          <p id="verdictText">Load a reading, then run analysis to see the AI's contamination verdict.</p>
-        </div>
-
-        <div class="qas-row">
-          <div class="qas-box"><div class="num" id="qasScore">--</div><div class="lbl">Quality Score</div></div>
-          <div class="qas-box"><div class="num" id="qasRefund">--</div><div class="lbl">Counts as Flag</div></div>
+          <span class="tag">READY</span>
+          <p id="verdictText">Analyze the latest image to check for contamination.</p>
         </div>
       </div>
     </section>
 
-    <!-- MONTHLY REWARD TRACKER -->
-    <section id="trackerSection" style="display:none;">
-      <div class="card">
-        <div class="card-head">
-          <h2>Monthly Reward Status</h2>
-          <span class="meta" id="cycleDate">--</span>
-        </div>
-        <div class="card-pad">
-          <p style="font-size:.8rem;color:var(--gray);margin:0 0 12px;line-height:1.5;">
-            $5/month rebate. Rebate is forfeited after 3 contamination flags (Moderate or Severe) in a cycle.
-          </p>
-          <div class="tracker-grid">
-            <div class="tracker-box">
-              <div class="lbl">Flags this cycle</div>
-              <div class="val mono" id="strikeCount">0 / 3</div>
-              <div class="strike-dots" id="strikeDots"></div>
-            </div>
-            <div class="tracker-box">
-              <div class="lbl">Rebate status</div>
-              <div id="rebateStatus" class="status-pill na"><span class="dot"></span>No data yet</div>
-            </div>
-          </div>
-          <button class="btn-ghost" id="resetCycleBtn" style="margin-top:10px;">Reset cycle (testing only)</button>
-        </div>
+    <section id="rebateSection">
+      <div class="card status-card">
+        <div class="status-title">Rebate Status</div>
+        <div id="rebateStatus" class="status-pill eligible"><span class="dot"></span>Eligible</div>
+        <p id="rebateNote" class="status-note">
+          If an issue is detected, you will have until the next bin check to correct it.
+        </p>
       </div>
     </section>
-
-    <!-- ADVANCED / TEST MODE -->
-    <section id="advancedSection" style="display:none;">
-      <div class="card card-pad">
-        <details class="advanced">
-          <summary>Test with your own photo instead</summary>
-          <div class="inner">
-            <input type="file" id="manualUpload" accept="image/jpeg,image/png">
-            <p style="font-size:.7rem;color:var(--gray);margin:8px 0 0;">
-              For testing the AI verdict only — this does not save to your device log or reward tracker.
-            </p>
-          </div>
-        </details>
-        <details class="advanced" style="margin-top:10px;">
-          <summary>Change endpoint</summary>
-          <div class="inner">
-            <input type="text" id="endpointInput2" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
-            <button class="btn-ghost" id="updateEndpointBtn" style="margin-top:8px;">Update</button>
-          </div>
-        </details>
-      </div>
-    </section>
-
   </main>
 
-  <div class="logline" id="logLine">Ready.</div>
+  <div class="logline" id="logLine">Connecting…</div>
 </div>
 
 <script>
 (function(){
+  var ENDPOINT = "https://script.google.com/macros/s/AKfycbzjgCu91o2Lp9e7XjpNpImYUjo3slLuyA6xUcBhUIuHvab18WSjELGmn1deDd-thU1x/exec";
+  var K_LAST_IMAGE = "binsense_last_successful_image_v1";
+  var K_REBATE = "binsense_rebate_state_v2";
 
-  // ==== STORAGE KEYS ====
-  var K_ENDPOINT = "binsense_endpoint";
-  var K_CYCLE = "binsense_cycle_v1";
+  var currentFileId = null;
 
-  // ==== QAS MAPPING ====
-  var QAS = {
-    CLEAN:    { score: 95, flagged: "No",  strike: 0, cls: "clean",    tag: "CLEAN" },
-    MODERATE: { score: 70, flagged: "Yes", strike: 1, cls: "moderate", tag: "MODERATE" },
-    SEVERE:   { score: 40, flagged: "Yes", strike: 1, cls: "severe",  tag: "SEVERE" },
-    PENDING:  { score: "--", flagged: "--", strike: 0, cls: "pending",  tag: "AWAITING ANALYSIS" }
-  };
-
-  // ==== STATE ====
-  var currentFileId = null;      // for real device readings
-  var manualBase64 = null;       // for the manual "test with your own photo" path
-  var manualMime = null;
-
-  // ==== DOM ====
   var $ = function(id){ return document.getElementById(id); };
-  var setupCard = $("setupCard"), endpointInput = $("endpointInput"), saveEndpointBtn = $("saveEndpointBtn");
-  var readingSection = $("readingSection"), analysisSection = $("analysisSection"),
-      trackerSection = $("trackerSection"), advancedSection = $("advancedSection");
   var headerSub = $("headerSub"), logLine = $("logLine");
   var latestPhoto = $("latestPhoto"), photoEmpty = $("photoEmpty"), photoTimestamp = $("photoTimestamp");
-  var statFill = $("statFill"), statBattery = $("statBattery"), statDistance = $("statDistance");
-  var refreshBtn = $("refreshBtn");
+  var statFill = $("statFill"), refreshBtn = $("refreshBtn");
   var binType = $("binType"), analyzeBtn = $("analyzeBtn"), verdictBox = $("verdictBox"), verdictText = $("verdictText");
-  var qasScore = $("qasScore"), qasRefund = $("qasRefund");
-  var strikeCount = $("strikeCount"), strikeDots = $("strikeDots"), rebateStatus = $("rebateStatus"), cycleDate = $("cycleDate");
-  var resetCycleBtn = $("resetCycleBtn");
-  var manualUpload = $("manualUpload");
-  var endpointInput2 = $("endpointInput2"), updateEndpointBtn = $("updateEndpointBtn");
+  var rebateStatus = $("rebateStatus"), rebateNote = $("rebateNote");
 
   function log(msg, isErr){
     logLine.textContent = msg;
     logLine.className = "logline" + (isErr ? " err" : "");
-  }
-
-  // ==== ENDPOINT ====
-  function getEndpoint(){ return localStorage.getItem(K_ENDPOINT) || ""; }
-  function setEndpoint(url){
-    localStorage.setItem(K_ENDPOINT, url.trim());
-    boot();
-  }
-
-  function boot(){
-    var ep = getEndpoint();
-    if (!ep){
-      setupCard.style.display = "block";
-      [readingSection, analysisSection, trackerSection, advancedSection].forEach(function(s){ s.style.display = "none"; });
-      return;
-    }
-    setupCard.style.display = "none";
-    [readingSection, analysisSection, trackerSection, advancedSection].forEach(function(s){ s.style.display = "block"; });
-    headerSub.textContent = "Connected";
-    loadCycle();
-    fetchLatest();
-  }
-
-  saveEndpointBtn.addEventListener("click", function(){
-    if (!endpointInput.value.trim()){ log("Enter your Apps Script URL first.", true); return; }
-    setEndpoint(endpointInput.value);
-  });
-  updateEndpointBtn.addEventListener("click", function(){
-    if (!endpointInput2.value.trim()){ return; }
-    setEndpoint(endpointInput2.value);
-  });
-
-  // ==== FETCH LATEST READING ====
-  function fetchLatest(){
-    log("Checking for latest reading...");
-    refreshBtn.disabled = true;
-    var url = getEndpoint() + "?action=latest&t=" + Date.now();
-    fetch(url, { cache: "no-store" })
-      .then(function(r){ return r.json(); })
-      .then(function(data){
-        refreshBtn.disabled = false;
-        if (data.status === "EMPTY"){
-          log("Connected — no readings from your device yet.");
-          return;
-        }
-        if (data.status !== "OK"){
-          log("Error: " + (data.message || "unknown"), true);
-          return;
-        }
-        renderReading(data);
-        log("Loaded reading from " + formatDate(data.timestamp));
-      })
-      .catch(function(err){
-        refreshBtn.disabled = false;
-        log("Could not reach endpoint: " + err.message, true);
-      });
-  }
-  refreshBtn.addEventListener("click", fetchLatest);
-
-  function renderReading(data){
-    currentFileId = data.image_file_id || null;
-
-    if (data.image_base64){
-      latestPhoto.src = "data:" + (data.mime_type || "image/jpeg") + ";base64," + data.image_base64;
-      latestPhoto.style.display = "block";
-      photoEmpty.style.display = "none";
-    } else {
-      latestPhoto.style.display = "none";
-      photoEmpty.style.display = "flex";
-    }
-    photoTimestamp.textContent = formatDate(data.timestamp);
-
-    statFill.textContent = (data.fill_level !== "" && data.fill_level !== undefined) ? Math.round(data.fill_level) + "%" : "--";
-    statBattery.textContent = (data.battery_v !== "" && data.battery_v !== undefined) ? Number(data.battery_v).toFixed(2) + "V" : "--";
-    statDistance.textContent = (data.distance_cm !== "" && data.distance_cm !== undefined) ? Math.round(data.distance_cm) + "cm" : "--";
-
-    manualBase64 = null; // real reading takes priority over any manual test image
-    checkAnalyzeEnabled();
-    resetVerdict();
   }
 
   function formatDate(ts){
@@ -419,173 +173,226 @@
     return d.toLocaleString(undefined, { month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
   }
 
-  // ==== MANUAL TEST UPLOAD ====
-  manualUpload.addEventListener("change", function(e){
-    var file = e.target.files[0];
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function(){
-      manualBase64 = reader.result.split(",")[1];
-      manualMime = file.type;
-      currentFileId = null; // manual image takes priority
-      latestPhoto.src = reader.result;
-      latestPhoto.style.display = "block";
-      photoEmpty.style.display = "none";
-      photoTimestamp.textContent = "Test image (not saved)";
-      statFill.textContent = "--"; statBattery.textContent = "--"; statDistance.textContent = "--";
-      checkAnalyzeEnabled();
-      resetVerdict();
-      log("Test image loaded. Run analysis when ready.");
+  function currentMonthKey(){
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+  }
+
+  function loadRebateState(){
+    var state = null;
+    try { state = JSON.parse(localStorage.getItem(K_REBATE) || "null"); } catch(e){ state = null; }
+    if (!state || state.month !== currentMonthKey()){
+      state = { month: currentMonthKey(), status: "eligible", flaggedFileId: null };
+      saveRebateState(state);
+    }
+    renderRebateState(state);
+    return state;
+  }
+
+  function saveRebateState(state){
+    localStorage.setItem(K_REBATE, JSON.stringify(state));
+    renderRebateState(state);
+  }
+
+  function renderRebateState(state){
+    rebateStatus.className = "status-pill";
+    if (state.status === "pending"){
+      rebateStatus.classList.add("pending");
+      rebateStatus.innerHTML = '<span class="dot"></span>Action Needed';
+      rebateNote.textContent = "Possible contamination was detected. Correct it before the next bin check to maintain rebate eligibility.";
+    } else if (state.status === "ineligible"){
+      rebateStatus.classList.add("ineligible");
+      rebateStatus.innerHTML = '<span class="dot"></span>Not Eligible';
+      rebateNote.textContent = "Contamination remained on the follow-up check. Rebate eligibility is not active for this cycle.";
+    } else {
+      rebateStatus.classList.add("eligible");
+      rebateStatus.innerHTML = '<span class="dot"></span>Eligible';
+      rebateNote.textContent = "If an issue is detected, you will have until the next bin check to correct it.";
+    }
+  }
+
+  function updateRebateFromAnalysis(resultKey, fileId){
+    if (!fileId) return; // only real device images affect rebate state
+    var state = loadRebateState();
+
+    if (resultKey === "CLEAN"){
+      if (state.status === "pending" && state.flaggedFileId && fileId !== state.flaggedFileId){
+        state.status = "eligible";
+        state.flaggedFileId = null;
+        saveRebateState(state);
+      }
+      return;
+    }
+
+    if (resultKey === "MODERATE" || resultKey === "SEVERE"){
+      if (state.status === "eligible"){
+        state.status = "pending";
+        state.flaggedFileId = fileId;
+        saveRebateState(state);
+      } else if (state.status === "pending" && state.flaggedFileId && fileId !== state.flaggedFileId){
+        state.status = "ineligible";
+        saveRebateState(state);
+      }
+    }
+  }
+
+  function cacheSuccessfulImage(data){
+    if (!data.image_base64) return;
+    var cached = {
+      image_base64: data.image_base64,
+      mime_type: data.mime_type || "image/jpeg",
+      timestamp: data.timestamp || "",
+      image_file_id: data.image_file_id || null
     };
-    reader.readAsDataURL(file);
-  });
+    try { localStorage.setItem(K_LAST_IMAGE, JSON.stringify(cached)); } catch(e){}
+  }
+
+  function loadCachedImage(){
+    try {
+      var cached = JSON.parse(localStorage.getItem(K_LAST_IMAGE) || "null");
+      if (!cached || !cached.image_base64) return false;
+      showImage(cached);
+      currentFileId = cached.image_file_id || null;
+      checkAnalyzeEnabled();
+      return true;
+    } catch(e){
+      return false;
+    }
+  }
+
+  function showImage(data){
+    latestPhoto.src = "data:" + (data.mime_type || "image/jpeg") + ";base64," + data.image_base64;
+    latestPhoto.style.display = "block";
+    photoEmpty.style.display = "none";
+    photoTimestamp.textContent = formatDate(data.timestamp);
+  }
+
+  function fetchLatest(){
+    log("Checking latest bin status…");
+    refreshBtn.disabled = true;
+
+    fetch(ENDPOINT + "?action=latest&t=" + Date.now(), { cache:"no-store" })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        refreshBtn.disabled = false;
+
+        if (data.status === "EMPTY"){
+          log("No device readings yet.");
+          return;
+        }
+        if (data.status !== "OK"){
+          log("Could not load latest reading: " + (data.message || "unknown error"), true);
+          return;
+        }
+
+        statFill.textContent =
+          (data.fill_level !== "" && data.fill_level !== undefined)
+          ? Math.round(data.fill_level) + "%"
+          : "--";
+
+        if (data.image_base64){
+          cacheSuccessfulImage(data);
+          showImage(data);
+          currentFileId = data.image_file_id || null;
+        } else {
+          // Keep showing the last known successful capture rather than blanking the image.
+          loadCachedImage();
+        }
+
+        checkAnalyzeEnabled();
+        resetVerdict();
+        log("Updated " + formatDate(data.timestamp));
+      })
+      .catch(function(err){
+        refreshBtn.disabled = false;
+        log("Could not reach BinSense service: " + err.message, true);
+      });
+  }
 
   function checkAnalyzeEnabled(){
-    analyzeBtn.disabled = !(currentFileId || manualBase64);
+    analyzeBtn.disabled = !currentFileId;
   }
 
   function resetVerdict(){
     verdictBox.className = "verdict pending";
-    verdictBox.querySelector(".tag").textContent = "AWAITING ANALYSIS";
-    verdictText.textContent = "Ready to analyze this image.";
-    qasScore.textContent = "--"; qasRefund.textContent = "--";
+    verdictBox.querySelector(".tag").textContent = "READY";
+    verdictText.textContent = currentFileId
+      ? "Analyze the latest image to check for contamination."
+      : "Waiting for a successful image capture.";
   }
 
-  // ==== ANALYZE ====
+  refreshBtn.addEventListener("click", fetchLatest);
+
   analyzeBtn.addEventListener("click", function(){
-    if (!currentFileId && !manualBase64){ log("No image to analyze.", true); return; }
+    if (!currentFileId){
+      log("No successful image is available to analyze.", true);
+      return;
+    }
 
+    var analyzingFileId = currentFileId;
     analyzeBtn.disabled = true;
-    analyzeBtn.innerHTML = '<span class="spinner"></span>Analyzing...';
+    analyzeBtn.innerHTML = '<span class="spinner"></span>Analyzing…';
     verdictBox.className = "verdict pending";
-    verdictText.textContent = "Sending to Gemini for analysis...";
-    log("Running contamination analysis...");
+    verdictBox.querySelector(".tag").textContent = "ANALYZING";
+    verdictText.textContent = "Checking the latest image for contamination…";
+    log("Running analysis…");
 
-    var promise;
-    if (currentFileId){
-      var url = getEndpoint() + "?action=analyze&fileId=" + encodeURIComponent(currentFileId) + "&binType=" + encodeURIComponent(binType.value) + "&t=" + Date.now();
-      promise = fetch(url, { cache: "no-store" }).then(function(r){ return r.json(); });
-    } else {
-      // Manual test image: send bytes directly via POST-style query is too large,
-      // so we post it to the same analyze action with the image in the body.
-      // NOTE: Content-Type is deliberately "text/plain" here, not "application/json" —
-      // Apps Script doesn't handle CORS preflight requests, and a JSON content-type
-      // triggers one, causing a "Failed to fetch" that never reaches the script at all.
-      // Apps Script parses the raw body as JSON fine regardless of this header.
-      promise = fetch(getEndpoint(), {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "analyze_manual", image_base64: manualBase64, mime_type: manualMime, bin_type: binType.value })
-      }).then(function(r){ return r.json(); });
-    }
+    var url = ENDPOINT +
+      "?action=analyze&fileId=" + encodeURIComponent(analyzingFileId) +
+      "&binType=" + encodeURIComponent(binType.value) +
+      "&t=" + Date.now();
 
-    promise.then(function(data){
-      analyzeBtn.disabled = false;
-      analyzeBtn.textContent = "Analyze for Contamination";
+    fetch(url, { cache:"no-store" })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        analyzeBtn.disabled = false;
+        analyzeBtn.textContent = "Analyze Bin";
 
-      if (data.status !== "OK"){
+        if (data.status !== "OK"){
+          verdictBox.className = "verdict pending";
+          verdictBox.querySelector(".tag").textContent = "TRY AGAIN";
+          verdictText.textContent = "Analysis is temporarily unavailable. Please try again.";
+          log("Analysis failed: " + (data.message || "unknown error"), true);
+          return;
+        }
+
+        var text = data.result_text || "";
+        var match = text.match(/^(CLEAN|MODERATE|SEVERE):/i);
+        var key = match ? match[1].toUpperCase() : "PENDING";
+        var cls = key === "CLEAN" ? "clean" : (key === "MODERATE" ? "moderate" : (key === "SEVERE" ? "severe" : "pending"));
+
+        verdictBox.className = "verdict " + cls;
+        verdictBox.querySelector(".tag").textContent =
+          key === "PENDING" ? "RESULT" : key;
+        verdictText.textContent = text.replace(/^(CLEAN|MODERATE|SEVERE):\s*/i, "") || "Analysis completed.";
+
+        updateRebateFromAnalysis(key, analyzingFileId);
+        log("Analysis complete.");
+      })
+      .catch(function(err){
+        analyzeBtn.disabled = false;
+        analyzeBtn.textContent = "Analyze Bin";
         verdictBox.className = "verdict pending";
-        verdictText.textContent = "Analysis failed: " + (data.message || "unknown error");
-        log("Analysis failed: " + (data.message || "unknown error"), true);
-        return;
-      }
-
-      var text = data.result_text || "";
-      var match = text.match(/^(CLEAN|MODERATE|SEVERE):/i);
-      var key = match ? match[1].toUpperCase() : "PENDING";
-      var mapping = QAS[key] || QAS.PENDING;
-
-      verdictBox.className = "verdict " + mapping.cls;
-      verdictBox.querySelector(".tag").textContent = mapping.tag;
-      verdictText.textContent = text.replace(/^(CLEAN|MODERATE|SEVERE):\s*/i, "");
-      qasScore.textContent = mapping.score;
-      qasRefund.textContent = mapping.flagged;
-
-      if (currentFileId){
-        recordStrike(mapping.strike);
-      }
-      log("Analysis complete.");
-    }).catch(function(err){
-      analyzeBtn.disabled = false;
-      analyzeBtn.textContent = "Analyze for Contamination";
-      verdictText.textContent = "Analysis failed: " + err.message;
-      log("Analysis failed: " + err.message, true);
-    });
+        verdictBox.querySelector(".tag").textContent = "TRY AGAIN";
+        verdictText.textContent = "Analysis is temporarily unavailable. Please try again.";
+        log("Analysis failed: " + err.message, true);
+      });
   });
 
-  // ==== MONTHLY CYCLE TRACKING (localStorage — survives refresh) ====
-  function loadCycle(){
-    var raw = localStorage.getItem(K_CYCLE);
-    var cycle;
-    try { cycle = raw ? JSON.parse(raw) : null; } catch(e){ cycle = null; }
-
-    var now = new Date();
-    if (!cycle || isNewMonth(cycle.start, now)){
-      cycle = { start: now.toISOString(), strikes: 0 };
-      localStorage.setItem(K_CYCLE, JSON.stringify(cycle));
-    }
-    renderCycle(cycle);
+  loadRebateState();
+  var hadCachedImage = loadCachedImage();
+  if (hadCachedImage){
+    photoEmpty.style.display = "none";
   }
+  fetchLatest();
 
-  function isNewMonth(startIso, now){
-    var start = new Date(startIso);
-    return start.getMonth() !== now.getMonth() || start.getFullYear() !== now.getFullYear();
-  }
-
-  function recordStrike(amount){
-    if (!amount) { return; }
-    var raw = localStorage.getItem(K_CYCLE);
-    var cycle = raw ? JSON.parse(raw) : { start: new Date().toISOString(), strikes: 0 };
-    cycle.strikes += amount;
-    localStorage.setItem(K_CYCLE, JSON.stringify(cycle));
-    renderCycle(cycle);
-  }
-
-  function renderCycle(cycle){
-    cycleDate.textContent = "Since " + formatDate(cycle.start);
-    strikeCount.textContent = cycle.strikes + " / 3";
-
-    strikeDots.innerHTML = "";
-    for (var i = 0; i < 3; i++){
-      var d = document.createElement("div");
-      d.className = "d" + (i < cycle.strikes ? " filled" : "");
-      strikeDots.appendChild(d);
-    }
-
-    rebateStatus.className = "status-pill";
-    if (cycle.strikes === 0){
-      rebateStatus.classList.add("full");
-      rebateStatus.innerHTML = '<span class="dot"></span>Full rebate';
-    } else if (cycle.strikes < 3){
-      rebateStatus.classList.add("mid");
-      rebateStatus.innerHTML = '<span class="dot"></span>At risk';
-    } else {
-      rebateStatus.classList.add("out");
-      rebateStatus.innerHTML = '<span class="dot"></span>Forfeited';
-    }
-  }
-
-  resetCycleBtn.addEventListener("click", function(){
-    localStorage.removeItem(K_CYCLE);
-    loadCycle();
-    log("Cycle reset (testing only).");
-  });
-
-  // ==== PWA: register/update service worker ====
-  // Versioned URL + reg.update() helps GitHub Pages clients pick up new builds.
   if ("serviceWorker" in navigator){
     window.addEventListener("load", function(){
-      navigator.serviceWorker.register("sw.js?v=2")
+      navigator.serviceWorker.register("sw.js?v=3")
         .then(function(reg){ return reg.update(); })
-        .catch(function(){ /* fine if unavailable */ });
+        .catch(function(){});
     });
   }
-
-  // ==== INIT ====
-  endpointInput.value = getEndpoint();
-  endpointInput2.value = getEndpoint();
-  boot();
-
 })();
 </script>
 </body>
