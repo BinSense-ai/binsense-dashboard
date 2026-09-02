@@ -467,9 +467,13 @@
     } else {
       // Manual test image: send bytes directly via POST-style query is too large,
       // so we post it to the same analyze action with the image in the body.
+      // NOTE: Content-Type is deliberately "text/plain" here, not "application/json" —
+      // Apps Script doesn't handle CORS preflight requests, and a JSON content-type
+      // triggers one, causing a "Failed to fetch" that never reaches the script at all.
+      // Apps Script parses the raw body as JSON fine regardless of this header.
       promise = fetch(getEndpoint(), {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({ action: "analyze_manual", image_base64: manualBase64, mime_type: manualMime, bin_type: binType.value })
       }).then(function(r){ return r.json(); });
     }
