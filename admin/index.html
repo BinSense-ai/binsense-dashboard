@@ -1,1 +1,577 @@
-Temporary
+<!DOCTYPE html>
+<!-- BinSense PWA build: 2026-09-04-v1 admin -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0D1B2A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BinSense">
+<title>BinSense Admin</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0D1B2A; --green:#2ECC71; --teal:#1ABC9C;
+    --mint-tint:#E8F5EE; --mint-tint2:#F0F7F4;
+    --gray:#6B7785; --amber:#F5A623; --red:#E74C3C; --ink:#101820;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',system-ui,sans-serif;background:var(--navy);color:var(--ink);
+    min-height:100vh;-webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .shell{max-width:480px;margin:0 auto;min-height:100vh;background:#fff;box-shadow:0 0 60px rgba(0,0,0,.3);}
+  header{background:var(--navy);color:#fff;padding:22px 20px 24px;}
+  header .brand{display:flex;align-items:center;gap:10px;}
+  header .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px rgba(46,204,113,.2);}
+  header h1{font-size:1.2rem;margin:0;letter-spacing:.01em;}
+  header p{margin:6px 0 0;color:#9FB0C3;font-size:.82rem;}
+  main{padding:16px;padding-bottom:32px;}
+  section{margin-bottom:14px;}
+  .card{background:#fff;border:1px solid #E4E9EF;border-radius:14px;overflow:hidden;}
+  .card-pad{padding:16px;}
+  .card-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #EEF1F5;}
+  .card-head h2{font-size:.92rem;margin:0;font-weight:600;}
+  .card-head .meta{font-size:.72rem;color:var(--gray);}
+
+  .photo-wrap{position:relative;background:#0A0F16;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;}
+  .photo-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+  .photo-empty{color:#5C6B7A;font-size:.85rem;text-align:center;padding:20px;}
+  .photo-badge{position:absolute;top:10px;left:10px;background:rgba(13,27,42,.78);color:#fff;font-size:.68rem;padding:4px 9px;border-radius:20px;backdrop-filter:blur(4px);}
+
+  .fill-box{background:#fff;padding:15px 16px;text-align:center;border-top:1px solid #EEF1F5;}
+  .fill-box .val{font-size:1.8rem;font-weight:700;color:var(--navy);}
+  .fill-box .lbl{font-size:.68rem;color:var(--gray);margin-top:3px;text-transform:uppercase;letter-spacing:.05em;}
+
+  button{font-family:inherit;border:none;cursor:pointer;border-radius:10px;font-weight:600;font-size:.88rem;transition:opacity .15s ease,transform .1s ease;}
+  button:active{transform:scale(.98);}
+  button:disabled{opacity:.45;cursor:default;transform:none;}
+  .btn-primary{width:100%;background:var(--green);color:var(--navy);padding:13px;}
+  .btn-secondary{width:100%;background:var(--mint-tint);color:var(--navy);padding:12px;border:1px solid #D5EEDE;}
+
+  select{width:100%;padding:11px 12px;border-radius:10px;border:1px solid #DCE2E8;background:#fff;font-family:inherit;font-size:.88rem;color:var(--ink);appearance:none;
+    background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3e%3cpath d='M6 8l4 4 4-4' stroke='%236B7785' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+    background-repeat:no-repeat;background-position:right 12px center;}
+  label.field-label{display:block;font-size:.75rem;color:var(--gray);margin-bottom:6px;font-weight:500;}
+
+  .verdict{padding:16px;border-radius:12px;margin-top:12px;}
+  .verdict.clean{background:#E8F9EF;border:1px solid #B9EDCB;}
+  .verdict.moderate{background:#FFF6E5;border:1px solid #F5DA9F;}
+  .verdict.severe{background:#FDEBEA;border:1px solid #F3B9B4;}
+  .verdict.pending{background:var(--mint-tint2);border:1px solid #E0EAE4;}
+  .verdict .tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.03em;padding:3px 9px;border-radius:20px;margin-bottom:8px;}
+  .verdict.clean .tag{background:var(--green);color:#fff;}
+  .verdict.moderate .tag{background:var(--amber);color:#fff;}
+  .verdict.severe .tag{background:var(--red);color:#fff;}
+  .verdict.pending .tag{background:#C9D4DC;color:var(--navy);}
+  .verdict p{margin:0;font-size:.86rem;line-height:1.5;color:#33404B;}
+
+  .status-card{padding:16px;}
+  .status-title{font-size:.75rem;color:var(--gray);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
+  .status-pill{display:inline-flex;align-items:center;gap:7px;font-size:.95rem;font-weight:700;}
+  .status-pill .dot{width:8px;height:8px;border-radius:50%;}
+  .status-pill.eligible{color:#1E9E58;} .status-pill.eligible .dot{background:#1E9E58;}
+  .status-pill.pending{color:#C97A0E;} .status-pill.pending .dot{background:#C97A0E;}
+  .status-pill.ineligible{color:#C93B32;} .status-pill.ineligible .dot{background:#C93B32;}
+  .status-note{font-size:.78rem;color:var(--gray);line-height:1.5;margin:8px 0 0;}
+
+  .logline{font-size:.72rem;color:var(--gray);text-align:center;padding:8px 16px 14px;}
+  .logline.err{color:var(--red);}
+  .spinner{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;display:inline-block;vertical-align:-3px;margin-right:7px;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .admin-chip{display:inline-flex;align-items:center;gap:6px;background:#18324B;color:#BFE9D0;font-size:.68rem;font-weight:700;padding:4px 9px;border-radius:20px;margin-left:auto;}
+  .source-grid{display:grid;grid-template-columns:1fr;gap:10px;}
+  .admin-note{font-size:.72rem;color:var(--gray);line-height:1.45;margin:8px 0 0;}
+  .btn-danger{width:100%;background:#FFF0EF;color:#B9352F;padding:12px;border:1px solid #F1C2BE;}
+  .file-name{font-size:.72rem;color:var(--gray);margin-top:7px;word-break:break-all;}
+  .hidden{display:none!important;}
+
+</style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div class="brand"><span class="dot"></span><h1 class="display">BinSense</h1><span class="admin-chip">ADMIN</span></div>
+    <p id="headerSub">Admin tools for live and saved BinSense images.</p>
+  </header>
+
+  <main>
+    <section id="readingSection">
+      <div class="card">
+        <div class="photo-wrap">
+          <img id="latestPhoto" style="display:none;" alt="Latest BinSense bin capture">
+          <div class="photo-empty" id="photoEmpty">Loading latest successful image…</div>
+          <span class="photo-badge" id="photoTimestamp"></span>
+        </div>
+        <div class="fill-box">
+          <div class="val mono" id="statFill">--</div>
+          <div class="lbl">Fill Level</div>
+        </div>
+        <div class="card-pad" style="padding-top:14px;">
+          <button class="btn-secondary" id="refreshBtn">Refresh</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="analysisSection">
+      <div class="card card-pad">
+        <label class="field-label">Image Source</label>
+        <select id="imageSource">
+          <option value="latest">Latest Device Image</option>
+          <option value="saved">Saved Drive Image</option>
+          <option value="local">Upload Image From This Device</option>
+        </select>
+
+        <div id="savedControls" class="hidden" style="margin-top:12px;">
+          <label class="field-label">Saved BinSense Image</label>
+          <select id="savedImageSelect"><option value="">Loading saved images…</option></select>
+          <div style="margin-top:8px;"><button class="btn-secondary" id="reloadSavedBtn">Reload Saved Images</button></div>
+        </div>
+
+        <div id="localControls" class="hidden" style="margin-top:12px;">
+          <label class="field-label">Choose Image</label>
+          <input id="localFile" type="file" accept="image/*">
+          <div class="file-name" id="localFileName">No file selected.</div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <label class="field-label">Bin Type</label>
+          <select id="binType">
+            <option value="recycle">Recycling</option>
+            <option value="compost">Compost</option>
+            <option value="trash">Trash / Landfill</option>
+          </select>
+        </div>
+
+        <div style="margin-top:12px;">
+          <button class="btn-primary" id="analyzeBtn" disabled>Analyze Bin</button>
+        </div>
+
+        <div class="verdict pending" id="verdictBox">
+          <span class="tag">READY</span>
+          <p id="verdictText">Select an image source and analyze it for contamination.</p>
+        </div>
+        <p class="admin-note">Historical and locally uploaded images are for admin testing and do not change the customer rebate status.</p>
+      </div>
+    </section>
+
+    <section id="rebateSection">
+      <div class="card status-card">
+        <div class="status-title">Rebate Status</div>
+        <div id="rebateStatus" class="status-pill eligible"><span class="dot"></span>Eligible</div>
+        <p id="rebateNote" class="status-note">
+          If an issue is detected, you will have until the next bin check to correct it.
+        </p>
+      </div>
+    </section>
+
+    <section id="adminResetSection">
+      <div class="card card-pad">
+        <div class="status-title">Admin Test Controls</div>
+        <button class="btn-danger" id="resetBtn">Reset Local Rebate Status</button>
+        <p class="admin-note">This resets only this browser's prototype rebate state to Eligible. It does not delete Sheet rows, Drive images, or device data.</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="logline" id="logLine">Connecting…</div>
+</div>
+
+<script>
+(function(){
+  var ENDPOINT = "https://script.google.com/macros/s/AKfycbzjgCu91o2Lp9e7XjpNpImYUjo3slLuyA6xUcBhUIuHvab18WSjELGmn1deDd-thU1x/exec";
+  var K_LAST_IMAGE = "binsense_last_successful_image_v1";
+  var K_REBATE = "binsense_rebate_state_v2";
+
+  var currentFileId = null;
+  var currentSource = "latest";
+  var localImageBase64 = null;
+  var localImageMime = "image/jpeg";
+
+  var $ = function(id){ return document.getElementById(id); };
+  var headerSub = $("headerSub"), logLine = $("logLine");
+  var latestPhoto = $("latestPhoto"), photoEmpty = $("photoEmpty"), photoTimestamp = $("photoTimestamp");
+  var statFill = $("statFill"), refreshBtn = $("refreshBtn");
+  var binType = $("binType"), analyzeBtn = $("analyzeBtn"), verdictBox = $("verdictBox"), verdictText = $("verdictText");
+  var imageSource = $("imageSource"), savedControls = $("savedControls"), savedImageSelect = $("savedImageSelect"), reloadSavedBtn = $("reloadSavedBtn");
+  var localControls = $("localControls"), localFile = $("localFile"), localFileName = $("localFileName"), resetBtn = $("resetBtn");
+  var rebateStatus = $("rebateStatus"), rebateNote = $("rebateNote");
+
+  function log(msg, isErr){
+    logLine.textContent = msg;
+    logLine.className = "logline" + (isErr ? " err" : "");
+  }
+
+  function formatDate(ts){
+    if (!ts) return "--";
+    var d = new Date(ts);
+    if (isNaN(d.getTime())) return String(ts);
+    return d.toLocaleString(undefined, { month:"short", day:"numeric", hour:"numeric", minute:"2-digit" });
+  }
+
+  function currentMonthKey(){
+    var d = new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+  }
+
+  function loadRebateState(){
+    var state = null;
+    try { state = JSON.parse(localStorage.getItem(K_REBATE) || "null"); } catch(e){ state = null; }
+    if (!state || state.month !== currentMonthKey()){
+      state = { month: currentMonthKey(), status: "eligible", flaggedFileId: null };
+      saveRebateState(state);
+    }
+    renderRebateState(state);
+    return state;
+  }
+
+  function saveRebateState(state){
+    localStorage.setItem(K_REBATE, JSON.stringify(state));
+    renderRebateState(state);
+  }
+
+  function renderRebateState(state){
+    rebateStatus.className = "status-pill";
+    if (state.status === "pending"){
+      rebateStatus.classList.add("pending");
+      rebateStatus.innerHTML = '<span class="dot"></span>Action Needed';
+      rebateNote.textContent = "Possible contamination was detected. Correct it before the next bin check to maintain rebate eligibility.";
+    } else if (state.status === "ineligible"){
+      rebateStatus.classList.add("ineligible");
+      rebateStatus.innerHTML = '<span class="dot"></span>Not Eligible';
+      rebateNote.textContent = "Contamination remained on the follow-up check. Rebate eligibility is not active for this cycle.";
+    } else {
+      rebateStatus.classList.add("eligible");
+      rebateStatus.innerHTML = '<span class="dot"></span>Eligible';
+      rebateNote.textContent = "If an issue is detected, you will have until the next bin check to correct it.";
+    }
+  }
+
+  function updateRebateFromAnalysis(resultKey, fileId){
+    if (!fileId) return; // only real device images affect rebate state
+    var state = loadRebateState();
+
+    if (resultKey === "CLEAN"){
+      if (state.status === "pending" && state.flaggedFileId && fileId !== state.flaggedFileId){
+        state.status = "eligible";
+        state.flaggedFileId = null;
+        saveRebateState(state);
+      }
+      return;
+    }
+
+    if (resultKey === "MODERATE" || resultKey === "SEVERE"){
+      if (state.status === "eligible"){
+        state.status = "pending";
+        state.flaggedFileId = fileId;
+        saveRebateState(state);
+      } else if (state.status === "pending" && state.flaggedFileId && fileId !== state.flaggedFileId){
+        state.status = "ineligible";
+        saveRebateState(state);
+      }
+    }
+  }
+
+  function cacheSuccessfulImage(data){
+    if (!data.image_base64) return;
+    var cached = {
+      image_base64: data.image_base64,
+      mime_type: data.mime_type || "image/jpeg",
+      timestamp: data.timestamp || "",
+      image_file_id: data.image_file_id || null
+    };
+    try { localStorage.setItem(K_LAST_IMAGE, JSON.stringify(cached)); } catch(e){}
+  }
+
+  function loadCachedImage(){
+    try {
+      var cached = JSON.parse(localStorage.getItem(K_LAST_IMAGE) || "null");
+      if (!cached || !cached.image_base64) return false;
+      showImage(cached);
+      currentFileId = cached.image_file_id || null;
+      checkAnalyzeEnabled();
+      return true;
+    } catch(e){
+      return false;
+    }
+  }
+
+  function showImage(data){
+    latestPhoto.src = "data:" + (data.mime_type || "image/jpeg") + ";base64," + data.image_base64;
+    latestPhoto.style.display = "block";
+    photoEmpty.style.display = "none";
+    photoTimestamp.textContent = formatDate(data.timestamp);
+  }
+
+  function fetchLatest(){
+    log("Checking latest bin status…");
+    refreshBtn.disabled = true;
+
+    fetch(ENDPOINT + "?action=latest&t=" + Date.now(), { cache:"no-store" })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        refreshBtn.disabled = false;
+
+        if (data.status === "EMPTY"){
+          log("No device readings yet.");
+          return;
+        }
+        if (data.status !== "OK"){
+          log("Could not load latest reading: " + (data.message || "unknown error"), true);
+          return;
+        }
+
+        statFill.textContent =
+          (data.fill_level !== "" && data.fill_level !== undefined)
+          ? Math.round(data.fill_level) + "%"
+          : "--";
+
+        if (data.image_base64){
+          cacheSuccessfulImage(data);
+          showImage(data);
+          currentFileId = data.image_file_id || null;
+        } else {
+          // Keep showing the last known successful capture rather than blanking the image.
+          loadCachedImage();
+        }
+
+        checkAnalyzeEnabled();
+        resetVerdict();
+        log("Updated " + formatDate(data.timestamp));
+      })
+      .catch(function(err){
+        refreshBtn.disabled = false;
+        log("Could not reach BinSense service: " + err.message, true);
+      });
+  }
+
+  function checkAnalyzeEnabled(){
+    if (currentSource === "local") {
+      analyzeBtn.disabled = !localImageBase64;
+    } else {
+      analyzeBtn.disabled = !currentFileId;
+    }
+  }
+
+  function resetVerdict(){
+    verdictBox.className = "verdict pending";
+    verdictBox.querySelector(".tag").textContent = "READY";
+    if (currentSource === "saved") {
+      verdictText.textContent = currentFileId ? "Analyze the selected saved image." : "Choose a saved image first.";
+    } else if (currentSource === "local") {
+      verdictText.textContent = localImageBase64 ? "Analyze the selected local image." : "Choose an image from this device first.";
+    } else {
+      verdictText.textContent = currentFileId ? "Analyze the latest image to check for contamination." : "Waiting for a successful image capture.";
+    }
+  }
+
+  function loadSavedImages(){
+    savedImageSelect.innerHTML = '<option value="">Loading saved images…</option>';
+    reloadSavedBtn.disabled = true;
+    fetch(ENDPOINT + "?action=saved_images&limit=50&t=" + Date.now(), {cache:"no-store"})
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        reloadSavedBtn.disabled = false;
+        if (data.status !== "OK") throw new Error(data.message || "Could not load saved images");
+        savedImageSelect.innerHTML = '<option value="">Select a saved image…</option>';
+        (data.images || []).forEach(function(img){
+          var opt = document.createElement("option");
+          opt.value = img.file_id;
+          opt.textContent = formatDate(img.timestamp) + " — " + img.name;
+          opt.dataset.timestamp = img.timestamp || "";
+          savedImageSelect.appendChild(opt);
+        });
+        log((data.images || []).length + " saved images available.");
+      })
+      .catch(function(err){
+        reloadSavedBtn.disabled = false;
+        savedImageSelect.innerHTML = '<option value="">Could not load saved images</option>';
+        log("Saved image list failed: " + err.message, true);
+      });
+  }
+
+  function loadSavedPreview(fileId){
+    if (!fileId) return;
+    log("Loading saved image…");
+    fetch(ENDPOINT + "?action=saved_image&fileId=" + encodeURIComponent(fileId) + "&t=" + Date.now(), {cache:"no-store"})
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (data.status !== "OK") throw new Error(data.message || "Could not load image");
+        showImage(data);
+        statFill.textContent = "--";
+        log("Saved image loaded.");
+      })
+      .catch(function(err){ log("Saved image failed: " + err.message, true); });
+  }
+
+  imageSource.addEventListener("change", function(){
+    currentSource = imageSource.value;
+    savedControls.classList.toggle("hidden", currentSource !== "saved");
+    localControls.classList.toggle("hidden", currentSource !== "local");
+    if (currentSource === "latest") {
+      localImageBase64 = null;
+      fetchLatest();
+    } else if (currentSource === "saved") {
+      currentFileId = null;
+      loadSavedImages();
+      checkAnalyzeEnabled();
+      resetVerdict();
+    } else {
+      currentFileId = null;
+      checkAnalyzeEnabled();
+      resetVerdict();
+    }
+  });
+
+  savedImageSelect.addEventListener("change", function(){
+    currentFileId = savedImageSelect.value || null;
+    if (currentFileId) loadSavedPreview(currentFileId);
+    checkAnalyzeEnabled();
+    resetVerdict();
+  });
+
+  reloadSavedBtn.addEventListener("click", loadSavedImages);
+
+  localFile.addEventListener("change", function(){
+    var file = localFile.files && localFile.files[0];
+    localImageBase64 = null;
+    if (!file) {
+      localFileName.textContent = "No file selected.";
+      checkAnalyzeEnabled();
+      resetVerdict();
+      return;
+    }
+    localFileName.textContent = file.name;
+    localImageMime = file.type || "image/jpeg";
+    var reader = new FileReader();
+    reader.onload = function(){
+      var result = String(reader.result || "");
+      var comma = result.indexOf(",");
+      localImageBase64 = comma >= 0 ? result.slice(comma + 1) : null;
+      latestPhoto.src = result;
+      latestPhoto.style.display = "block";
+      photoEmpty.style.display = "none";
+      photoTimestamp.textContent = "Local file";
+      statFill.textContent = "--";
+      checkAnalyzeEnabled();
+      resetVerdict();
+      log("Local image ready for analysis.");
+    };
+    reader.readAsDataURL(file);
+  });
+
+  resetBtn.addEventListener("click", function(){
+    var state = {month: currentMonthKey(), status:"eligible", flaggedFileId:null};
+    saveRebateState(state);
+    log("Local rebate status reset to Eligible.");
+  });
+
+  refreshBtn.addEventListener("click", function(){
+    currentSource = "latest";
+    imageSource.value = "latest";
+    savedControls.classList.add("hidden");
+    localControls.classList.add("hidden");
+    fetchLatest();
+  });
+
+  analyzeBtn.addEventListener("click", function(){
+    var sourceAtStart = currentSource;
+    var analyzingFileId = currentFileId;
+
+    if (sourceAtStart === "local" && !localImageBase64){
+      log("Choose a local image first.", true);
+      return;
+    }
+    if (sourceAtStart !== "local" && !analyzingFileId){
+      log("No image is available to analyze.", true);
+      return;
+    }
+
+    analyzeBtn.disabled = true;
+    analyzeBtn.innerHTML = '<span class="spinner"></span>Analyzing…';
+    verdictBox.className = "verdict pending";
+    verdictBox.querySelector(".tag").textContent = "ANALYZING";
+    verdictText.textContent = "Checking the selected image for contamination…";
+    log("Running analysis…");
+
+    var request;
+    if (sourceAtStart === "local") {
+      request = fetch(ENDPOINT, {
+        method:"POST",
+        headers:{"Content-Type":"text/plain;charset=utf-8"},
+        body: JSON.stringify({
+          action:"analyze_manual",
+          image_base64:localImageBase64,
+          mime_type:localImageMime,
+          bin_type:binType.value
+        })
+      });
+    } else {
+      var url = ENDPOINT +
+        "?action=analyze&fileId=" + encodeURIComponent(analyzingFileId) +
+        "&binType=" + encodeURIComponent(binType.value) +
+        "&t=" + Date.now();
+      request = fetch(url, { cache:"no-store" });
+    }
+
+    request
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        analyzeBtn.textContent = "Analyze Bin";
+        checkAnalyzeEnabled();
+
+        if (data.status !== "OK"){
+          verdictBox.className = "verdict pending";
+          verdictBox.querySelector(".tag").textContent = "TRY AGAIN";
+          verdictText.textContent = "Analysis is temporarily unavailable. Please try again.";
+          log("Analysis failed: " + (data.message || "unknown error"), true);
+          return;
+        }
+
+        var text = data.result_text || "";
+        var match = text.match(/^(CLEAN|MODERATE|SEVERE):/i);
+        var key = match ? match[1].toUpperCase() : "PENDING";
+        var cls = key === "CLEAN" ? "clean" : (key === "MODERATE" ? "moderate" : (key === "SEVERE" ? "severe" : "pending"));
+        verdictBox.className = "verdict " + cls;
+        verdictBox.querySelector(".tag").textContent = key === "PENDING" ? "RESULT" : key;
+        verdictText.textContent = text.replace(/^(CLEAN|MODERATE|SEVERE):\s*/i, "") || "Analysis completed.";
+
+        // Only latest live-device analysis participates in the prototype rebate state.
+        if (sourceAtStart === "latest") updateRebateFromAnalysis(key, analyzingFileId);
+        log("Analysis complete.");
+      })
+      .catch(function(err){
+        analyzeBtn.textContent = "Analyze Bin";
+        checkAnalyzeEnabled();
+        verdictBox.className = "verdict pending";
+        verdictBox.querySelector(".tag").textContent = "TRY AGAIN";
+        verdictText.textContent = "Analysis is temporarily unavailable. Please try again.";
+        log("Analysis failed: " + err.message, true);
+      });
+  });
+
+  loadRebateState();
+  var hadCachedImage = loadCachedImage();
+  if (hadCachedImage){
+    photoEmpty.style.display = "none";
+  }
+  fetchLatest();
+
+  if ("serviceWorker" in navigator){
+    window.addEventListener("load", function(){
+      navigator.serviceWorker.register("sw.js?v=admin1")
+        .then(function(reg){ return reg.update(); })
+        .catch(function(){});
+    });
+  }
+})();
+</script>
+</body>
+</html>
