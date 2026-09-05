@@ -1,7 +1,7 @@
 {
-  "name": "BinSense",
+  "name": "BinSense Customer",
   "short_name": "BinSense",
-  "description": "Simple bin fill and contamination monitoring for BinSense.",
+  "description": "Customer-facing BinSense bin status and contamination monitor.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0D1B2A",

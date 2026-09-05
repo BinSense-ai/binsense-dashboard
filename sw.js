@@ -1,8 +1,8 @@
-// BinSense customer PWA — service worker v3
+// BinSense customer PWA — service worker v4
 // Network-first for the app shell so installed phones pick up new dashboard versions.
 // Apps Script requests are never cached.
 
-var CACHE_NAME = "binsense-shell-v3";
+var CACHE_NAME = "binsense-customer-shell-v4";
 var SHELL_FILES = ["./index.html", "./manifest.json"];
 
 self.addEventListener("install", function(event) {

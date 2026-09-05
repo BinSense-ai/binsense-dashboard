@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BinSense PWA build: 2026-09-02-v3 customer-simple -->
+<!-- BinSense PWA build: 2026-09-04-v4 customer-simple -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -388,7 +388,7 @@
 
   if ("serviceWorker" in navigator){
     window.addEventListener("load", function(){
-      navigator.serviceWorker.register("sw.js?v=3")
+      navigator.serviceWorker.register("sw.js?v=4")
         .then(function(reg){ return reg.update(); })
         .catch(function(){});
     });
