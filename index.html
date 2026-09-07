@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BinSense PWA build: 2026-09-04-v4 customer-simple -->
+<!-- BinSense PWA build: 2026-09-06-v5 customer-clean-recovery -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -199,15 +199,15 @@
     if (state.status === "pending"){
       rebateStatus.classList.add("pending");
       rebateStatus.innerHTML = '<span class="dot"></span>Action Needed';
-      rebateNote.textContent = "Possible contamination was detected. Correct it before the next bin check to maintain rebate eligibility.";
+      rebateNote.textContent = "Contamination needs attention. Correct it, then analyze a new image to restore rebate eligibility.";
     } else if (state.status === "ineligible"){
       rebateStatus.classList.add("ineligible");
       rebateStatus.innerHTML = '<span class="dot"></span>Not Eligible';
-      rebateNote.textContent = "Contamination remained on the follow-up check. Rebate eligibility is not active for this cycle.";
+      rebateNote.textContent = "Contamination was detected. Correct it, then analyze a new image. A clean follow-up will restore rebate eligibility.";
     } else {
       rebateStatus.classList.add("eligible");
       rebateStatus.innerHTML = '<span class="dot"></span>Eligible';
-      rebateNote.textContent = "If an issue is detected, you will have until the next bin check to correct it.";
+      rebateNote.textContent = "If contamination is detected, correct it and analyze a new image. A clean follow-up restores eligibility.";
     }
   }
 
@@ -215,8 +215,11 @@
     if (!fileId) return; // only real device images affect rebate state
     var state = loadRebateState();
 
+    // A CLEAN result can restore eligibility, but only when it comes from
+    // a different (newer) image than the image that triggered Not Eligible.
     if (resultKey === "CLEAN"){
-      if (state.status === "pending" && state.flaggedFileId && fileId !== state.flaggedFileId){
+      if ((state.status === "ineligible" || state.status === "pending") &&
+          (!state.flaggedFileId || fileId !== state.flaggedFileId)){
         state.status = "eligible";
         state.flaggedFileId = null;
         saveRebateState(state);
@@ -224,15 +227,13 @@
       return;
     }
 
+    // Any detected contamination keeps/puts the customer in Not Eligible.
+    // Save the contaminated image ID so the same image cannot later be used
+    // as the "clean follow-up" image.
     if (resultKey === "MODERATE" || resultKey === "SEVERE"){
-      if (state.status === "eligible"){
-        state.status = "pending";
-        state.flaggedFileId = fileId;
-        saveRebateState(state);
-      } else if (state.status === "pending" && state.flaggedFileId && fileId !== state.flaggedFileId){
-        state.status = "ineligible";
-        saveRebateState(state);
-      }
+      state.status = "ineligible";
+      state.flaggedFileId = fileId;
+      saveRebateState(state);
     }
   }
 
@@ -388,7 +389,7 @@
 
   if ("serviceWorker" in navigator){
     window.addEventListener("load", function(){
-      navigator.serviceWorker.register("sw.js?v=4")
+      navigator.serviceWorker.register("sw.js?v=5")
         .then(function(reg){ return reg.update(); })
         .catch(function(){});
     });
